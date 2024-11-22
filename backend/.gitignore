@@ -1,0 +1,12 @@
+# Ignorar arquivos específicos
+secret-key.txt
+config.json
+
+# Ignorar diretórios
+/node_modules
+/dist
+
+# Ignorar arquivos com extensões específicas
+*.log
+*.tmp
+
