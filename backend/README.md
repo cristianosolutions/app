@@ -1,6 +1,5 @@
-- # Configuração do Back-End
+# Configuração do Back-End
 
-# Inicializar a instalação do Node.js dentro da pasta backend
-
+## Inicializar a instalação do Node.js dentro da pasta backend
 npm init -y
 npm install express mongoose dotenv cors body-parser bcrypt jsonwebtoken
