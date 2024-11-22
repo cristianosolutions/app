@@ -1,4 +1,4 @@
-# - Configuração do Back-End
+- # Configuração do Back-End
 
 # Inicializar a instalação do Node.js dentro da pasta backend
 
