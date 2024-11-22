@@ -7,7 +7,7 @@
     <title>Administração de Usuários</title>
     <!-- Link para o Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-</head>
+    </head>
 
 <body>
     <div class="container mt-5">
@@ -21,6 +21,35 @@
         </div>
     </div>
 
+    <!-- Modal de Edição -->
+    <div class="modal fade" id="editUserModal" tabindex="-1" aria-labelledby="editUserModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="editUserModalLabel">Editar Usuário</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="editUserForm">
+                        <input type="hidden" id="editUserId">
+                        <div class="mb-3">
+                            <label for="editUsername" class="form-label">Nome de Usuário</label>
+                            <input type="text" class="form-control" id="editUsername" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="editRole" class="form-label">Função</label>
+                            <select class="form-select" id="editRole">
+                                <option value="user">Usuário</option>
+                                <option value="admin">Administrador</option>
+                            </select>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Salvar Alterações</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Link para o Bootstrap JS e dependências -->
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
@@ -31,7 +60,7 @@
             const token = localStorage.getItem('token');
             if (!token) {
                 alert('Você precisa estar logado para acessar esta página!');
-                window.location.href = 'login.html'; // Redireciona para login se não tiver token
+                window.location.href = 'login.html';
                 return;
             }
 
@@ -61,7 +90,7 @@
                                 <td>${user.username}</td>
                                 <td>${user.role}</td>
                                 <td>
-                                    <button class="btn btn-warning btn-sm" onclick="editUser('${user._id}')">Editar</button>
+                                    <button class="btn btn-warning btn-sm" onclick="openEditModal('${user._id}', '${user.username}', '${user.role}')">Editar</button>
                                     <button class="btn btn-danger btn-sm" onclick="deleteUser('${user._id}')">Deletar</button>
                                 </td>
                             </tr>
@@ -90,19 +119,49 @@
                     headers: { Authorization: `Bearer ${token}` }
                 });
                 alert('Usuário excluído com sucesso!');
-                fetchUsers(); // Recarrega a lista de usuários
+                fetchUsers();
             } catch (error) {
                 alert('Erro ao excluir o usuário.');
                 console.error(error.response?.data?.error || error.message);
             }
         }
 
-        function editUser(userId) {
-            alert(`Aqui você pode editar o usuário com ID: ${userId}`);
-            // Aqui você pode adicionar um código para redirecionar para uma página de edição de usuário ou abrir um formulário.
+        function openEditModal(userId, username, role) {
+            document.getElementById('editUserId').value = userId;
+            document.getElementById('editUsername').value = username;
+            document.getElementById('editRole').value = role;
+
+            const editModal = new bootstrap.Modal(document.getElementById('editUserModal'));
+            editModal.show();
         }
 
-        // Carregar a lista de usuários ao carregar a página
+        document.getElementById('editUserForm').addEventListener('submit', async (event) => {
+            event.preventDefault();
+            const token = localStorage.getItem('token');
+            const userId = document.getElementById('editUserId').value;
+            const username = document.getElementById('editUsername').value;
+            const role = document.getElementById('editRole').value;
+
+            if (!token) {
+                alert('Você precisa estar logado para editar um usuário!');
+                window.location.href = 'login.html';
+                return;
+            }
+
+            try {
+                await axios.put(`http://localhost:5001/api/users/${userId}`, { username, role }, {
+                    headers: { Authorization: `Bearer ${token}` }
+                });
+                alert('Usuário atualizado com sucesso!');
+                fetchUsers();
+                const editModal = bootstrap.Modal.getInstance(document.getElementById('editUserModal'));
+                editModal.hide();
+            } catch (error) {
+                alert('Erro ao atualizar o usuário.');
+                console.error(error.response?.data?.error || error.message);
+            }
+        });
+
         window.onload = fetchUsers;
     </script>
 </body>

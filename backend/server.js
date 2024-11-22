@@ -11,7 +11,7 @@ app.use(cors());
 app.use(bodyParser.json());
 
 // Conexão com MongoDB
-mongoose.connect('mongodb://localhost:27017/dbname')
+mongoose.connect('mongodb://localhost:27017/dbapp')
     .then(() => console.log('Conectado ao MongoDB'))
     .catch(err => console.error('Erro ao conectar ao MongoDB:', err));
 
