@@ -6,6 +6,7 @@ config.json
 /node_modules
 /dist
 
+
 # Ignorar arquivos com extensões específicas
 *.log
 *.tmp
